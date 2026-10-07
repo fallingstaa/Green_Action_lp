@@ -1,0 +1,10 @@
+{
+  "description": "This corporate website showcases Green Action (Cambodia) Co., Ltd., highlighting their responsible mineral exploration efforts and commitment to sustainable development in Cambodia.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
