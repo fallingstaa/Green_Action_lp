@@ -90,6 +90,11 @@ h2 em, h1 em { font-style: normal; color: var(--gold); }
 .image-frame { height: 620px; overflow: hidden; }
 .image-frame img { height: 100%; object-fit: cover; transition: transform .8s; }
 .image-frame:hover img { transform: scale(1.04); }
+.image-frame.zoomable { cursor: zoom-in; }
+.lightbox { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.88); display: flex; align-items: center; justify-content: center; padding: 2rem; cursor: zoom-out; animation: lightbox-in .25s ease; }
+.lightbox img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; cursor: default; }
+.lightbox-close { position: absolute; top: 1rem; right: 1.5rem; background: none; border: 0; color: #fff; font-size: 2.5rem; line-height: 1; cursor: pointer; }
+@keyframes lightbox-in { from { opacity: 0; } to { opacity: 1; } }
 .image-note { position: absolute; right: 0; bottom: 0; width: 285px; background: var(--green); color: white; padding: 2rem; }
 .image-note span, .partner-tag span { display: block; color: #8fd29b; font-size: .6rem; letter-spacing: .15em; margin-bottom: .8rem; }
 .image-note strong, .partner-tag strong { font: 500 1.06rem/1.5 "Manrope"; }
@@ -102,7 +107,18 @@ h2 em, h1 em { font-style: normal; color: var(--gold); }
 .project-stage { display: grid; grid-template-columns: 1.35fr .65fr; gap: 3vw; align-items: center; margin-top: 4rem; }
 .map-wrap { height: 620px; position: relative; overflow: hidden; background: rgba(0,36,21,.55); border: 1px solid rgba(255,255,255,.12); }
 .topography { position: absolute; inset: 0; width: 100%; height: 100%; }
-.topography path { fill: none; stroke: rgba(255,255,255,.1); stroke-width: 1; }
+.topography path { fill: none; stroke: rgba(255,255,255,.1); stroke-width: 1; animation: topo-wave 6s ease-in-out infinite; }
+.topography path:nth-child(2) { animation-delay: -1.2s; }
+.topography path:nth-child(3) { animation-delay: -2.4s; }
+.topography path:nth-child(4) { animation-delay: -3.6s; }
+.topography path:nth-child(5) { animation-delay: -4.8s; }
+@keyframes topo-wave {
+  0%, 100% { transform: translate(-14px, 0); stroke: rgba(255,255,255,.1); }
+  25% { transform: translate(0, -10px); stroke: rgba(255,255,255,.25); }
+  50% { transform: translate(14px, 0); stroke: rgba(255,255,255,.1); }
+  75% { transform: translate(0, 10px); stroke: rgba(255,255,255,.25); }
+}
+@media (prefers-reduced-motion: reduce) { .topography path { animation: none; } }
 .cambodia-shape { position: absolute; inset: 6% 3%; width: 94%; height: 88%; overflow: visible; }
 .country-outline { fill: none; stroke: rgba(255,255,255,.7); stroke-width: 3; stroke-linejoin: round; }
 .country { fill: url(#mapFill); stroke: rgba(255,255,255,.16); stroke-width: .6; stroke-linejoin: round; }
@@ -144,6 +160,16 @@ h2 em, h1 em { font-style: normal; color: var(--gold); }
 .process { margin-top: 4rem; display: grid; grid-template-columns: repeat(4, 1fr); }
 .process-step { position: relative; padding: 0 2rem 0 0; }
 .process-step:not(:last-child):after { content: ""; position: absolute; height: 1px; top: 24px; left: 54px; right: 0; background: linear-gradient(90deg, var(--gold), var(--line)); }
+.process-step:not(:last-child):after { transform: scaleX(0); transform-origin: left; transition: transform .6s ease; }
+.process-top > span { transform: scale(.4); opacity: 0; transition: transform .5s cubic-bezier(.3,1.6,.5,1), opacity .4s ease, box-shadow .6s ease; }
+.process-step h3, .process-step p { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+.process.revealed .process-step:not(:last-child):after { transform: scaleX(1); transition-delay: calc(var(--i) * .9s + .35s); }
+.process.revealed .process-top > span { transform: scale(1); opacity: 1; transition-delay: calc(var(--i) * .9s); box-shadow: 0 0 0 0 rgba(255,208,90,0); animation: step-pulse 1s ease calc(var(--i) * .9s + .3s) 1; }
+.process.revealed .process-step h3, .process.revealed .process-step p { opacity: 1; transform: none; transition-delay: calc(var(--i) * .9s + .2s); }
+@keyframes step-pulse { 0% { box-shadow: 0 0 0 0 rgba(255,208,90,.7); } 100% { box-shadow: 0 0 0 16px rgba(255,208,90,0); } }
+@media (prefers-reduced-motion: reduce) {
+  .process-step:not(:last-child):after, .process-top > span, .process-step h3, .process-step p { transform: none; opacity: 1; transition: none; animation: none !important; }
+}
 .process-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; position: relative; z-index: 2; }
 .process-top > span { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; color: white; background: var(--green); font-size: .68rem; }
 .process-top i { display: none; }
@@ -152,7 +178,7 @@ h2 em, h1 em { font-style: normal; color: var(--gold); }
 
 .responsibility { background: var(--green); color: white; padding: 8rem 0; position: relative; overflow: hidden; }
 .responsibility:after { content: ""; position: absolute; width: 650px; height: 650px; border: 1px solid rgba(255,255,255,.07); border-radius: 50%; right: -180px; top: -300px; box-shadow: 0 0 0 80px rgba(255,255,255,.025), 0 0 0 160px rgba(255,255,255,.02); }
-.responsibility-heading { display: grid; grid-template-columns: 1fr .7fr; gap: 8vw; align-items: end; }
+.responsibility-heading { display: grid; grid-template-columns: 1.3fr .7fr; gap: 5vw; align-items: end; }
 .responsibility-heading h2 { margin-bottom: 0; }
 .responsibility-heading > p { color: rgba(255,255,255,.7); line-height: 1.8; }
 .responsibility-grid { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 5rem; border-top: 1px solid rgba(255,255,255,.25); }
@@ -171,7 +197,7 @@ h2 em, h1 em { font-style: normal; color: var(--gold); }
 .partner-mark strong { font-family: "Manrope"; }
 .partner-image { position: relative; height: 620px; }
 .partner-image img { height: 100%; object-fit: cover; }
-.partner-tag { position: absolute; left: -3rem; bottom: 2.5rem; background: var(--green-dark); color: white; padding: 2rem; width: 280px; }
+.partner-tag { position: absolute; left: -3rem; bottom: -1.5rem; background: var(--green-dark); color: white; padding: 2rem; width: 280px; }
 
 .global { background: #071b14; color: white; padding: 8rem 5vw 4rem; min-height: 780px; position: relative; overflow: hidden; }
 .global-title { position: relative; z-index: 2; max-width: 1280px; margin: auto; }
@@ -180,7 +206,10 @@ h2 em, h1 em { font-style: normal; color: var(--gold); }
 .world-map { max-width: 1150px; height: 500px; margin: -2rem auto 0; position: relative; }
 .world-map > svg { width: 100%; height: 100%; overflow: visible; }
 .world-map > svg > path:first-child { fill: rgba(255,255,255,.045); stroke: rgba(255,255,255,.16); stroke-width: 1; }
-.world-map .routes { fill: none; stroke: var(--blue); stroke-width: 1; stroke-dasharray: 5 8; opacity: .48; }
+.world-map .routes { fill: none; stroke: #4cc3ff; stroke-width: 1.4; stroke-dasharray: 5 8; opacity: .9; filter: drop-shadow(0 0 3px rgba(76,195,255,.8)); animation: route-flow 1.2s linear infinite, route-glow 2.4s ease-in-out infinite; }
+@keyframes route-flow { to { stroke-dashoffset: -26; } }
+@keyframes route-glow { 0%, 100% { opacity: .6; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .world-map .routes { animation: none; } }
 .world-point { position: absolute; display: flex; align-items: center; gap: .6rem; font-size: .65rem; color: rgba(255,255,255,.66); }
 .world-point i, .world-hub i { width: 7px; height: 7px; background: var(--gold); border-radius: 50%; box-shadow: 0 0 0 7px rgba(212,154,0,.15); animation: pointPulse 2s infinite alternate; }
 @keyframes pointPulse { to { box-shadow: 0 0 0 12px rgba(212,154,0,0); } }
@@ -278,6 +307,8 @@ footer { background: var(--green-deep); color: white; padding: 5rem 5vw 2rem; }
   .process-step { padding: 0 0 0 4rem; min-height: 150px; }
   .process-step:not(:last-child):after { top: 48px; left: 23px; width: 1px; height: calc(100% - 25px); background: linear-gradient(var(--gold), var(--line)); }
   .process-top { position: absolute; left: 0; top: 0; }
+  .process-step:not(:last-child):after { transform: scaleY(0); transform-origin: top; }
+  .process.revealed .process-step:not(:last-child):after { transform: scaleY(1); }
   .responsibility { padding: 6rem 0; }
   .responsibility-grid, .focus-grid { grid-template-columns: 1fr; }
   .responsibility-grid article { min-height: 245px; border-left: 1px solid rgba(255,255,255,.17); border-bottom: 1px solid rgba(255,255,255,.17); }

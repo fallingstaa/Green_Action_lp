@@ -1,4 +1,4 @@
-import { FormEvent, ReactNode, useEffect, useState } from "react";
+import { CSSProperties, FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 import logoMark from "./assets/logo.png";
 import { districts, insetRivers, lake, mapPoints, mekong, provinces, ratanakiri, ratInset, rivers } from "./cambodiaMapData";
 
@@ -77,11 +77,11 @@ function CambodiaMap() {
   return (
     <div className="map-wrap" aria-label="Map of Cambodia highlighting Ratanakiri province in the northeast">
       <svg className="topography" viewBox="0 0 700 620" aria-hidden="true">
-        <path d="M-10 155c90-95 167-23 237-64s137-72 212 8 162 9 224 64" />
-        <path d="M-30 198c94-91 173-22 245-61s139-69 218 8 169 8 232 61" />
-        <path d="M-45 242c97-88 180-21 254-59s144-66 225 7 174 8 239 59" />
-        <path d="M-60 482c110-74 204-18 288-49s162-56 253 6 196 6 270 50" />
-        <path d="M-40 525c102-70 190-17 269-46s152-53 238 6 182 6 251 47" />
+        <path d="M-120 215c40-20 80-40 110-60c90-95 167-23 237-64s137-72 212 8 162 9 224 64 s90 -30 160 -10" />
+        <path d="M-130 255c50-20 70-35 100-57c94-91 173-22 245-61s139-69 218 8 169 8 232 61 s90 -30 160 -10" />
+        <path d="M-145 300c50-20 70-35 100-58c97-88 180-21 254-59s144-66 225 7 174 8 239 59 s90 -30 160 -10" />
+        <path d="M-160 520c50-20 70-25 100-38c110-74 204-18 288-49s162-56 253 6 196 6 270 50 s90 -30 160 -10" />
+        <path d="M-140 560c50-20 70-25 100-35c102-70 190-17 269-46s152-53 238 6 182 6 251 47 s90 -30 160 -10" />
       </svg>
       <svg className="cambodia-shape" viewBox="0 0 640 580" role="img">
         <title>Cambodia with Ratanakiri province highlighted</title>
@@ -165,6 +165,24 @@ function WorldMap() {
 
 function App() {
   const [sent, setSent] = useState(false);
+  const [lightbox, setLightbox] = useState(false);
+  const processRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = processRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => el.classList.toggle("revealed", entry.isIntersecting),
+      { threshold: 0.2 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  useEffect(() => {
+    if (!lightbox) return;
+    const onKey = (event: KeyboardEvent) => event.key === "Escape" && setLightbox(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightbox]);
   useEffect(() => {
     const items = document.querySelectorAll(".reveal");
     const observer = new IntersectionObserver(
@@ -217,7 +235,7 @@ function App() {
             </div>
           </div>
           <div className="about-visual reveal">
-            <div className="image-frame"><img src={images.geology} alt="Geological rock formations in the field" /></div>
+            <div className="image-frame zoomable" role="button" tabIndex={0} aria-label="View full image" onClick={() => setLightbox(true)} onKeyDown={e => (e.key === "Enter" || e.key === " ") && setLightbox(true)}><img src={images.geology} alt="Geological rock formations in the field" /></div>
             <div className="image-note"><span>FIELD PERSPECTIVE</span><strong>Reading the landscape,<br />understanding the ground.</strong></div>
             <div className="vertical-caption">GEOLOGICAL UNDERSTANDING</div>
           </div>
@@ -249,14 +267,14 @@ function App() {
             <h2>Understanding the Ground <em>Beneath Us</em></h2>
             <p>Responsible exploration is a systematic process—combining geological understanding, technical analysis, and careful evaluation to build knowledge about what lies below.</p>
           </div>
-          <div className="process reveal">
+          <div className="process" ref={processRef}>
             {[
               ["01", "Explore", "Identify geological opportunities and areas of interest.", "compass"],
               ["02", "Investigate", "Study geological conditions and available data.", "layers"],
               ["03", "Drill", "Use targeted drilling to investigate subsurface conditions.", "drill"],
               ["04", "Evaluate", "Analyze findings and assess resource potential.", "chart"],
-            ].map(([n, title, text, icon]) => (
-              <div className="process-step" key={n}>
+            ].map(([n, title, text, icon], i) => (
+              <div className="process-step" key={n} style={{ "--i": i } as CSSProperties}>
                 <div className="process-top"><span>{n}</span><i><Icon name={icon as IconName} /></i></div>
                 <h3>{title}</h3><p>{text}</p>
               </div>
@@ -359,6 +377,12 @@ function App() {
         </div>
         <div className="footer-bottom"><span>© 2026 Green Action (Cambodia) Co., Ltd. All rights reserved.</span><span>RESPONSIBLE EXPLORATION · CAMBODIA</span></div>
       </footer>
+      {lightbox && (
+        <div className="lightbox" role="dialog" aria-modal="true" aria-label="Full image" onClick={() => setLightbox(false)}>
+          <button className="lightbox-close" aria-label="Close" onClick={() => setLightbox(false)}>×</button>
+          <img src={images.geology} alt="Geological rock formations in the field" onClick={e => e.stopPropagation()} />
+        </div>
+      )}
     </div>
   );
 }
