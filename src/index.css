@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Kantumruy+Pro:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -46,6 +46,12 @@ h2 em, h1 em { font-style: normal; color: var(--gold); }
 .nav a { font-size: .78rem; font-weight: 600; letter-spacing: .03em; position: relative; }
 .nav a:after { content: ""; position: absolute; height: 2px; background: var(--gold); left: 0; right: 100%; bottom: -.65rem; transition: right .25s; }
 .nav a:hover:after { right: 0; }
+.header-actions { justify-self: end; display: flex; align-items: center; gap: 1rem; }
+.lang-switch { display: flex; border: 1px solid currentColor; border-radius: 999px; padding: 3px; }
+.lang-switch button { background: none; border: 0; color: inherit; cursor: pointer; padding: .38rem .75rem; border-radius: 999px; font-size: .72rem; font-weight: 600; line-height: 1.2; opacity: .75; transition: background .2s, color .2s, opacity .2s; }
+.lang-switch button[lang="km"] { font-family: "Kantumruy Pro", sans-serif; }
+.lang-switch button:hover { opacity: 1; }
+.lang-switch button.is-active { background: var(--gold); color: white; opacity: 1; }
 .header-cta { justify-self: end; display: flex; align-items: center; gap: 1rem; border: 1px solid currentColor; padding: .78rem 1.15rem; font-size: .78rem; font-weight: 600; }
 .header-cta:hover { background: var(--gold); border-color: var(--gold); color: white; }
 .menu-button { display: none; background: none; border: 0; padding: .5rem; color: currentColor; }
@@ -120,6 +126,16 @@ h2 em, h1 em { font-style: normal; color: var(--gold); }
 .marker-ring { fill: none; stroke: #ffd05a; stroke-width: 1.5; transform-box: fill-box; transform-origin: center; animation: mapPulse 2.4s ease-out infinite; }
 .ring-two { animation-delay: .8s; }
 .marker-dot { fill: white; stroke: var(--green-deep); stroke-width: 1; }
+.province-quartz, .inset-quartz .inset-province { fill: rgba(214,232,240,.9); stroke: #ffffff; }
+.inset-quartz .inset-district { stroke: rgba(0,73,42,.35); }
+.inset-quartz .inset-card { stroke: rgba(214,232,240,.55); }
+.inset-quartz .map-city { fill: var(--green-deep); stroke: rgba(255,255,255,.8); }
+.marker-badge { fill: #ffd05a; stroke: var(--green-deep); stroke-width: 1.2; }
+.marker-quartz .marker-ring { stroke: #ffffff; }
+.marker-quartz .marker-badge, .inset-quartz .marker-badge { fill: #e6f2f7; }
+.inset-mineral { fill: #ffd05a; font-weight: 700; }
+.inset-quartz .inset-mineral { fill: #e6f2f7; }
+.marker-number { fill: var(--green-deep); font: 700 8.5px "Manrope"; letter-spacing: .3px; }
 .capital-dot { fill: var(--green-deep); stroke: white; stroke-width: 1.5; }
 @keyframes mapPulse { 0% { transform: scale(.4); opacity: 1; } 100% { transform: scale(1.6); opacity: 0; } }
 .map-overline { fill: #8fd29b; font: 9px "DM Sans"; letter-spacing: 2px; }
@@ -131,7 +147,12 @@ h2 em, h1 em { font-style: normal; color: var(--gold); }
 .scale-bar { fill: none; stroke: rgba(255,255,255,.6); stroke-width: 1; }
 .map-coordinate { position: absolute; bottom: 1.5rem; left: 1.5rem; font-size: .58rem; letter-spacing: .15em; color: rgba(255,255,255,.5); }
 .project-card { background: white; color: var(--ink); padding: 2.4rem; margin-left: -2vw; position: relative; z-index: 3; box-shadow: 0 25px 65px rgba(0,0,0,.22); }
-.card-index { color: var(--gold); font-size: .61rem; letter-spacing: .17em; font-weight: 700; margin-bottom: 1.6rem; }
+.card-index { color: var(--gold); font-size: .61rem; letter-spacing: .17em; font-weight: 700; margin-bottom: 1.6rem; display: flex; align-items: center; gap: .6rem; }
+.project-entry + .project-entry { margin-top: 1.4rem; }
+.project-entry .card-index { margin-bottom: .9rem; }
+.swatch { width: 12px; height: 9px; display: inline-block; }
+.swatch-quartz { background: #d6e8f0; outline: 1px solid #9cb9c6; }
+.swatch-metal { background: #d49a00; outline: 1px solid #b07f00; }
 .data-row { border-top: 1px solid var(--line); padding: 1.1rem 0; display: flex; flex-direction: column; gap: .4rem; }
 .data-row span { font-size: .57rem; letter-spacing: .16em; color: #7a8880; }
 .data-row strong { font: 600 .94rem "Manrope"; }
@@ -253,6 +274,8 @@ footer { background: var(--green-deep); color: white; padding: 5rem 5vw 2rem; }
   h2 { font-size: 2.55rem; }
   .section { padding-left: 1.25rem; padding-right: 1.25rem; }
   .site-header { height: 70px; padding: 0 1.25rem; }
+  .header-actions { gap: .5rem; }
+  .lang-switch button { padding: .32rem .55rem; }
   .logo-mark { width: 40px; height: 40px; }
   .logo strong { font-size: .72rem; }
   .hero { min-height: 720px; }
@@ -296,6 +319,18 @@ footer { background: var(--green-deep); color: white; padding: 5rem 5vw 2rem; }
   .footer-main { grid-template-columns: 1fr; gap: 2.5rem; }
   .footer-bottom { flex-direction: column; gap: 1rem; line-height: 1.5; }
 }
+
+/* Khmer: switch to a Khmer typeface and give stacked vowels and subscripts room to breathe. */
+html:lang(km) body *:not(.logo strong):not(.logo small) { font-family: "Kantumruy Pro", "Manrope", sans-serif; letter-spacing: 0; }
+html:lang(km) h1, html:lang(km) h2 { line-height: 1.35; }
+html:lang(km) h3, html:lang(km) blockquote { line-height: 1.5; }
+html:lang(km) p, html:lang(km) .lead { line-height: 1.95; }
+html:lang(km) .hero h1 { font-size: clamp(2.6rem, 6vw, 5.2rem); }
+html:lang(km) h2 { font-size: clamp(1.9rem, 3.4vw, 3.3rem); }
+html:lang(km) .eyebrow, html:lang(km) main small, html:lang(km) footer small, html:lang(km) .data-row span, html:lang(km) .card-index,
+html:lang(km) .scroll-cue, html:lang(km) .map-coordinate, html:lang(km) .image-note span, html:lang(km) .partner-tag span, html:lang(km) .vertical-caption { font-size: .76rem; }
+html:lang(km) .map-overline, html:lang(km) .map-legend text, html:lang(km) .map-city, html:lang(km) .map-water { font-size: 11px; }
+html:lang(km) .vision blockquote { font-size: clamp(1.7rem, 3.4vw, 3.3rem); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
